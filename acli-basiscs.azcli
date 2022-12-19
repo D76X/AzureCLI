@@ -60,11 +60,32 @@ echo $subscriptionId
 # https://learn.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#change-the-active-subscription
 az account set --subscription "My Demos"
 az account set --subscription "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+az account set --subscription "Visual Studio Professional with MSDN"
+az account set --subscription "Visual Studio Enterprise – MPN"
+
+# it is also possible to use variables
+SUB_NAME_PROFESSIONAL="Visual Studio Professional with MSDN"
+echo ${SUB_NAME_PROFESSIONAL}
+
+SUB_NAME_ENTERPRISE="Visual Studio Enterprise – MPN"
+echo ${SUB_NAME_ENTERPRISE}
+
+# and then use the following syntax..
+# you must use the syntax "${VAR_NAME}" as 
+# 1- the ${VAR_NAME} gets the value of the variable VAR_NAME
+# 2- the "VAR_VALUE" turns the value into a literal!
+az account set --subscription "${SUB_NAME_PROFESSIONAL}"
 
 # change the active subscription using a variable
 subscriptionId=$(az account list --query "[?isDefault].id" -o tsv)
 echo subscriptionId
 az account set --subscription $subscriptionId
+
+# verify
+az account show
+az account show --query "id"
+az account show --query "[id, name]"
+az account show --query "[id, name]" -o tsv
 
 # --------------------------------------------------------------------------------------------------
 # AzureCLI JMESPath query
@@ -116,7 +137,8 @@ az account list --query "[?name == 'Visual Studio Enterprise – MPN'].[id,name]
 # the query result may be stored into a variable
 # in this case the returned value is expected to be an array with a single element
 id0=$(az account list --query "[?name == 'Visual Studio Enterprise – MPN'].[id,name] | [0] | [0]")
-echo id0
+# in Bash to dump the value of the variable you must use $varName - the $ is required!
+echo $id0
 
 
 # --------------------------------------------------------------------------------------------------
